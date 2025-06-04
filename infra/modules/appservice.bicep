@@ -11,7 +11,7 @@ param openaiEnpoint string
 param openaiEndpointReasoningModel string
 param aiProjectName string
 param msis array = []
-param modelEndpoints object
+param modelEndpoints object = {}
 param appBlobStorageEndpoint string
 param authClientId string
 @secure()
