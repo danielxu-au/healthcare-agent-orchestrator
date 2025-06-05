@@ -1,6 +1,6 @@
-param workspaceName string
-param location string
-param instanceType string = ''
+param workspaceName string = 'cog-ai-prj-auagents-6sb'
+param location string = 'australiaeast'
+param instanceType string = 'Standard_NC40ads_H100_v5'
 param includeRadiologyModels bool = false // disables all models
 
 module hlsModels '../modules/hlsModel.bicep' = {
@@ -15,10 +15,7 @@ module hlsModels '../modules/hlsModel.bicep' = {
 
 // Usage:
 // // To delete the HLS models in an Azure Machine Learning workspace, you can use the following command:
-// az deployment group create \
-//   --resource-group <your-rg> \
-//   --template-file infra/scripts/delete-hlsModel.bicep \
-//   --parameters workspaceName=<your-workspace> location=<location>
+// az deployment group create --resource-group hlsagents --template-file infra/scripts/delete-hlsModel.bicep
 
 
 // or 

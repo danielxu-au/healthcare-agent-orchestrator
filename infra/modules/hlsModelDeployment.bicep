@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 param workspaceName string
-param instanceType string = 'Standard_NC24ads_A100_v4'
+param instanceType string = 'Standard_NC40ads_H100_v5'
 param modelId string
 param location string
 param name string

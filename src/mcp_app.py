@@ -10,7 +10,8 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.streamable_http import MCP_SESSION_ID_HEADER, StreamableHTTPServerTransport
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.routing import Mount
+from starlette.responses import JSONResponse
+from starlette.routing import Mount, Route
 
 import group_chat
 from data_models.app_context import AppContext
@@ -153,13 +154,27 @@ def create_fast_mcp_app(app_ctx: AppContext) -> Starlette:
 
             await http_transport.handle_request(scope, receive, send)
 
+    async def mcp_public_info(request):
+        """Public info endpoint for MCP."""
+        return JSONResponse({
+            "service": "MCP",
+            "description": "Multi-agent Coordination Platform for healthcare orchestration.",
+            "endpoints": [
+                "/orchestrator/ (streamable MCP protocol endpoint)"
+            ],
+            "tools": [agent["name"] for agent in agent_config],
+        })
+
     logger.setLevel(logging.DEBUG)
     # Create an ASGI application using the transport
+    routes = [
+        Route("/", mcp_public_info),
+        Mount("/orchestrator/", app=handle_streamable_http),
+    ]
+
     starlette_app = Starlette(
         debug=True,
-        routes=[
-            Mount("/orchestrator/", app=handle_streamable_http),
-        ],
+        routes=routes,
     )
 
     return starlette_app, lifespan

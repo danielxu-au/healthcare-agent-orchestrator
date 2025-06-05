@@ -1,6 +1,6 @@
-param workspaceName string
-param location string
-param instanceType string = ''
+param workspaceName string = 'cog-ai-prj-auagents-6sb'
+param location string = 'australiaeast' 
+param instanceType string = 'Standard_NC40ads_H100_v5'
 param includeRadiologyModels bool = true
 
 module hlsModels '../modules/hlsModel.bicep' = {
@@ -17,7 +17,4 @@ module hlsModels '../modules/hlsModel.bicep' = {
 // Usage:// To redeploy the HLS models in an Azure Machine Learning workspace, you can use the following command:
 // Make sure to replace <your-rg>, <your-workspace>, and <location> with your actual resource group name, workspace name, and Azure region.
 
-//az deployment group create \
-//  --resource-group <your-rg> \
-//  --template-file infra/scripts/redeploy-hlsModel.bicep \
-//  --parameters workspaceName=<your-workspace> location=<location>
+//az deployment group create --resource-group hlsagents --template-file infra/scripts/redeploy-hlsModel.bicep --parameters workspaceName=cog-ai-prj-auagents-6sb location=australiaeast
