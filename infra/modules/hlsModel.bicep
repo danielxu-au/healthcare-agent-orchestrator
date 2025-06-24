@@ -6,7 +6,7 @@ param location string
 param instanceType string
 param includeRadiologyModels bool = true
 
-var actualInstanceType = instanceType == '' ? 'Standard_NC24ads_A100_v4' : instanceType
+var actualInstanceType = instanceType == '' ? 'Standard_NC40ads_H100_v5' : instanceType
 
 var models = includeRadiologyModels ? [
   {

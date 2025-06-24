@@ -34,13 +34,13 @@ param appPlanName string = ''
 param appName string = ''
 
 @description('Gen AI model name and version to deploy')
-@allowed(['gpt-4o;2024-08-06', 'gpt-4.1;2025-04-14'])
+@allowed(['gpt-4o;2024-11-20', 'gpt-4.1;2025-04-14'])
 param model string
 @description('Tokens per minute capacity for the model. Units of 1000 (capacity = 100 means 100K tokens per minute)')
 param modelCapacity int
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/deployment-types
 @description('Specify the deployment type of the model. Only allow deployment types where data processing and data storage is within the specified Azure geography.')
-@allowed(['Standard', 'DataZoneStandard'])
+@allowed(['GlobalStandard','Standard', 'DataZoneStandard'])
 param modelSku string
 
 @description('Location to deploy AI Services')
@@ -50,6 +50,9 @@ param hlsDeploymentLocation string = resourceGroup().location
 
 @description('Instance type for HLS models')
 param instanceType string = ''
+
+@description('Deploy HLS models. Set to false to skip deployment of the expensive GPU resources.')
+param deployHlsModels bool = true
 
 @description('Location to deploy App Service')
 param appServiceLocation string = resourceGroup().location
@@ -189,7 +192,7 @@ module m_aihub 'modules/aistudio/aihub.bicep' = {
   }
 }
 
-module hlsModels 'modules/hlsModel.bicep' = {
+module hlsModels 'modules/hlsModel.bicep' = if (deployHlsModels) {
   name: 'deploy_hls_models'
   params: {
     location: empty(hlsDeploymentLocation) ? location : hlsDeploymentLocation
@@ -251,7 +254,7 @@ module m_app 'modules/appservice.bicep' = {
         name: agents[i].name
       }
     ]
-    modelEndpoints: toObject(hlsModels.outputs.modelEndpoints, model => model.name, model => model.endpoint)
+    modelEndpoints: deployHlsModels ? toObject(hlsModels.outputs.modelEndpoints, model => model.name, model => model.endpoint) : {}
     authClientId: authClientId
     appBlobStorageEndpoint: m_appStorageAccount.outputs.storageAccountBlobEndpoint
     graphRagSubscriptionKey: graphRagSubscriptionKey
